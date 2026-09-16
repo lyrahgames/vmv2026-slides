@@ -1,0 +1,67 @@
+---
+theme: default
+layout: default
+title: Automatic Motion Lines for Animated Surface Meshes
+info: VMV 2026 paper presentation
+highlighter: shiki
+transition: fade
+mdc: true
+colorSchema: light
+---
+
+<div class="title-slide">
+  <img class="vmv-background" src="/vmv2026-logo.jpg" alt="" aria-hidden="true"/>
+  <div class="title-content">
+    <div class="eyebrow"><span class="presentation-meta">25. September 2026 <span>·</span> <a href="https://www.gcpr-vmv.de/year/2026">VMV 2026</a> <span>·</span> Siegen, Germany</span></div>
+    <h1>Automatic Motion Lines<br/><em>for Animated Surface Meshes</em></h1>
+    <div class="authors">
+      <span class="author"><a class="author-name" href="https://orcid.org/0009-0001-9615-5976">Markus Pawellek</a><a class="orcid" href="https://orcid.org/0009-0001-9615-5976" aria-label="Markus Pawellek on ORCID"><img src="/orcid.png" alt="ORCID"/></a><sup>1,2</sup></span>
+      <span class="author-separator">·</span>
+      <span class="author"><a class="author-name" href="https://orcid.org/0000-0002-0544-5397">Anna Sterzik</a><a class="orcid" href="https://orcid.org/0000-0002-0544-5397" aria-label="Anna Sterzik on ORCID"><img src="/orcid.png" alt="ORCID"/></a><sup>1</sup></span>
+      <span class="author-separator">·</span>
+      <span class="author"><a class="author-name" href="https://orcid.org/0000-0002-1511-4022">Kai Lawonn</a><a class="orcid" href="https://orcid.org/0000-0002-1511-4022" aria-label="Kai Lawonn on ORCID"><img src="/orcid.png" alt="ORCID"/></a><sup>1</sup></span>
+    </div>
+    <div class="author-rule"></div>
+    <div class="institution-strip" aria-label="Affiliations">
+      <div class="affiliation-row">
+        <div class="affiliation leipzig-affiliation"><span class="institution-logo leipzig-logos"><a href="https://home.uni-leipzig.de/computervision/"><img src="/computer-vision-group-logo.png" alt="Computer Vision Group"/></a><a href="https://scads.ai/"><img src="/scadsai-logo.png" alt="ScaDS.AI Dresden/Leipzig"/></a><a href="https://www.uni-leipzig.de/"><img src="/leipzig-university-logo-without-divider.png" alt="University of Leipzig"/></a></span><span class="affiliation-separator" aria-hidden="true"></span><a class="affiliation-label" href="https://home.uni-leipzig.de/computervision/"><span><sup>1</sup> Computer Vision Group</span><span>ScaDS.AI Dresden/Leipzig</span><span>University of Leipzig</span></a></div>
+        <div class="affiliation jena-affiliation"><a class="institution-logo" href="https://www.uni-jena.de/"><img src="/jena-university-logo-cropped.png" alt="University of Jena"/></a><span class="affiliation-separator" aria-hidden="true"></span><a class="affiliation-label" href="https://www.uni-jena.de/"><span><sup>2</sup> Faculty of Mathematics</span><span>and Computer Science</span><span>University of Jena</span></a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+:root{--ink:#133b50;--muted:#527180;--teal:#087f7a;--coral:#f26b5e}
+html,html.dark{color-scheme:light}
+.slidev-layout{padding:0}
+.title-slide{position:relative;box-sizing:border-box;width:100%;height:100%;min-height:600px;overflow:hidden;background:#fff;color:var(--ink);padding:8% 8%;font-family:'DM Sans',sans-serif}
+.title-slide a,.title-slide a:hover,.title-slide a:focus{border:0!important;box-shadow:none!important;text-decoration:none!important;background-image:none!important}
+.title-content{position:relative;z-index:1;width:88%}
+.vmv-background{position:absolute;top:-15%;right:-3%;width:39%;height:auto;opacity:.16;pointer-events:none}
+.eyebrow{position:relative;color:var(--teal);font-size:13px;font-weight:700;letter-spacing:.18em}
+.eyebrow-rule{position:absolute;top:50%;left:-44px;width:34px;height:3px;margin-top:-1px;background:var(--coral)}
+.presentation-meta{margin-left:14px;color:var(--coral);font-weight:600;letter-spacing:.01em}
+.presentation-meta span{margin:0 7px;color:var(--teal)}
+.presentation-meta a{color:inherit}
+h1{margin:34px 0 28px;font-family:'Space Grotesk',sans-serif;font-size:45px;line-height:1.08;letter-spacing:-.045em;font-weight:600}
+h1 em{color:var(--teal);font-style:normal}
+.authors{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:20px;font-weight:600}
+.author{display:inline-flex;align-items:center;gap:4px}
+.author-name{color:var(--ink)}
+.orcid{display:inline-flex;align-items:center;width:16px;height:16px}
+.orcid img{display:block;width:100%;height:100%}
+.authors sup,.affiliation-label sup{color:var(--coral);font-size:.65em;font-weight:700}
+.author-separator{color:var(--teal)}
+.author-rule{width:100%;height:1px;margin:18px 0 20px;background:#b6d8d7}
+.institution-strip{width:calc(100% / .88);margin-top:0;color:var(--muted);font-size:14px;line-height:1.35}
+.affiliation-row{display:flex;flex-direction:column;align-items:flex-start;gap:24px}
+.affiliation{display:flex;flex:none;min-width:0;flex-direction:row-reverse;align-items:center;gap:12px;color:var(--muted)}
+.institution-logo{display:flex;flex:none;align-items:center;height:44px}
+.institution-logo img{display:block;width:auto;height:44px;object-fit:contain}
+.leipzig-logos{gap:14px}
+.affiliation-label{display:block;box-sizing:border-box;width:195px;padding-right:12px;text-align:right}
+.affiliation-separator{width:1px;height:58px;background:#b6d8d7}
+.affiliation-label span{display:block;white-space:nowrap}
+</style>

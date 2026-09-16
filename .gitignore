@@ -1,0 +1,16 @@
+*
+
+!.git*
+
+!/README.md
+
+!/package.json
+!/pnpm-lock.yaml
+
+!/slides.md
+
+!/public
+!/public/**
+
+node_modules
+dist
