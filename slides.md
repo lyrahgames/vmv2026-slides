@@ -10,9 +10,10 @@ colorSchema: light
 ---
 
 <div class="title-slide">
-  <img class="vmv-background" src="/vmv2026-logo.jpg" alt="" aria-hidden="true"/>
+  <a class="vmv-background-link" href="https://www.gcpr-vmv.de/year/2026" aria-label="VMV 2026">
+    <img class="vmv-background" src="/vmv2026-logo-cropped.jpg" alt="VMV 2026"/>
+  </a>
   <div class="title-content">
-    <div class="eyebrow"><span class="presentation-meta">25. September 2026 <span>·</span> <a href="https://www.gcpr-vmv.de/year/2026">VMV 2026</a> <span>·</span> Siegen, Germany</span></div>
     <h1>Automatic Motion Lines<br/><em>for Animated Surface Meshes</em></h1>
     <div class="authors">
       <span class="author"><a class="author-name" href="https://orcid.org/0009-0001-9615-5976">Markus Pawellek</a><a class="orcid" href="https://orcid.org/0009-0001-9615-5976" aria-label="Markus Pawellek on ORCID"><img src="/orcid.png" alt="ORCID"/></a><sup>1,2</sup></span>
@@ -39,12 +40,8 @@ html,html.dark{color-scheme:light}
 .title-slide{position:relative;box-sizing:border-box;width:100%;height:100%;min-height:600px;overflow:hidden;background:#fff;color:var(--ink);padding:8% 8%;font-family:'DM Sans',sans-serif}
 .title-slide a,.title-slide a:hover,.title-slide a:focus{border:0!important;box-shadow:none!important;text-decoration:none!important;background-image:none!important}
 .title-content{position:relative;z-index:1;width:88%}
-.vmv-background{position:absolute;top:-15%;right:-3%;width:39%;height:auto;opacity:.16;pointer-events:none}
-.eyebrow{position:relative;color:var(--teal);font-size:13px;font-weight:700;letter-spacing:.18em}
-.eyebrow-rule{position:absolute;top:50%;left:-44px;width:34px;height:3px;margin-top:-1px;background:var(--coral)}
-.presentation-meta{margin-left:14px;color:var(--coral);font-weight:600;letter-spacing:.01em}
-.presentation-meta span{margin:0 7px;color:var(--teal)}
-.presentation-meta a{color:inherit}
+.vmv-background-link{position:absolute;top:6%;right:4%;z-index:1;width:39%;line-height:0}
+.vmv-background{position:relative;width:100%;height:auto;opacity:.16;display:block}
 h1{margin:34px 0 28px;font-family:'Space Grotesk',sans-serif;font-size:45px;line-height:1.08;letter-spacing:-.045em;font-weight:600}
 h1 em{color:var(--teal);font-style:normal}
 .authors{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:20px;font-weight:600}
