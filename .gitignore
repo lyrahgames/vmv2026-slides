@@ -13,6 +13,9 @@
 
 !/slides.md
 
+!/components
+!/components/*.vue
+
 !/public
 !/public/**
 

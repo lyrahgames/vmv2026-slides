@@ -13,6 +13,7 @@ colorSchema: light
   <a class="vmv-background-link" href="https://www.gcpr-vmv.de/year/2026" aria-label="VMV 2026">
     <img class="vmv-background" src="/vmv2026-logo-cropped.jpg" alt="VMV 2026"/>
   </a>
+  <img class="cube-background" src="/illustrative-cube-with-speedlines.png" alt="" aria-hidden="true"/>
   <div class="title-content">
     <h1>Automatic Motion Lines<br/><em>for Animated Surface Meshes</em></h1>
     <div class="authors">
@@ -42,6 +43,7 @@ html,html.dark{color-scheme:light}
 .title-content{position:relative;z-index:1;width:88%}
 .vmv-background-link{position:absolute;top:6%;right:4%;z-index:1;width:39%;line-height:0}
 .vmv-background{position:relative;width:100%;height:auto;opacity:.16;display:block}
+.cube-background{position:absolute;top:24%;right:-42%;z-index:0;width:150%;height:auto;opacity:.22;transform:rotate(18deg);transform-origin:top right;pointer-events:none}
 h1{margin:34px 0 28px;font-family:'Space Grotesk',sans-serif;font-size:45px;line-height:1.08;letter-spacing:-.045em;font-weight:600}
 h1 em{color:var(--teal);font-style:normal}
 .authors{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:20px;font-weight:600}
@@ -62,3 +64,21 @@ h1 em{color:var(--teal);font-style:normal}
 .affiliation-separator{width:1px;height:58px;background:#b6d8d7}
 .affiliation-label span{display:block;white-space:nowrap}
 </style>
+
+---
+
+<!-- <video id="butterfly-first" controls autoplay loop muted playsinline src="/butterfly.webm"></video> -->
+
+<SlidevVideo autoplay loop>
+  <source src="/butterfly.webm" type="video/webm" />
+</SlidevVideo>
+
+---
+
+![Gamy Grand Prix de l'ACF, 1913 motocyclette](/Gamy-Grd-prix-de-l_Acf-1913-Motocyclette.jpg)
+
+---
+
+<SlidevVideo v-click autoplay loop>
+  <source src="/butterfly-with-lines.webm" type="video/webm" />
+</SlidevVideo>
