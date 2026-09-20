@@ -20,12 +20,25 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Initialize submodules
+        run: |
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
+          git submodule update --init --recursive
+
+      - name: Install Rust nightly
+        run: |
+          rustup toolchain install nightly --profile minimal
+          rustup target add wasm32-unknown-unknown --toolchain nightly
+
       - uses: actions/setup-node@v6
         with:
           node-version: lts/*
 
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
+      - run: pnpm run demo:build
+        env:
+          RUSTUP_TOOLCHAIN: nightly
       - run: pnpm exec slidev build --base /${{ github.event.repository.name }}/ --without-notes
 
       - uses: actions/upload-pages-artifact@v5

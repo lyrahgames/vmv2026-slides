@@ -209,12 +209,14 @@ async function waitForCanvasLayout() {
   return Boolean(canvasSize())
 }
 
-// Resolve every public model through the document URL before calling fetch.
-// Passing a URL object prevents a browser from interpreting a relative asset
-// as a local `file://` resource when the presentation is served below a
-// subdirectory, and gives all three formats identical URL behavior.
+// Resolve every public model through Slidev's configured base URL before
+// calling fetch. Public assets are copied below that base during a production
+// build, so a leading slash must not turn `/models/...` into a domain-root URL
+// when the presentation is hosted from a GitHub Pages project subdirectory.
 function assetUrl(path: string): URL {
-  const url = new URL(path, document.baseURI)
+  const baseUrl = new URL(import.meta.env.BASE_URL, document.baseURI)
+  const relativePath = path.replace(/^\/+/, '')
+  const url = new URL(relativePath, baseUrl)
   if (url.protocol === 'file:') {
     throw new Error(`Model URL resolves to file://, which a web page cannot fetch: ${path}`)
   }
