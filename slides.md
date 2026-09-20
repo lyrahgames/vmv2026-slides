@@ -79,6 +79,52 @@ h1 em{color:var(--teal);font-style:normal}
 
 ---
 
-<SlidevVideo v-click autoplay loop>
+<SlidevVideo autoplay loop>
   <source src="/butterfly-with-lines.webm" type="video/webm" />
 </SlidevVideo>
+
+---
+
+<script setup lang="ts">
+import { lilium } from './showcases/lilium'
+</script>
+
+# JavaScript-scripted camera path
+
+<ObjViewer :script="lilium" />
+
+---
+
+<script setup lang="ts">
+import { flair } from './showcases/flair'
+</script>
+
+# Animated glTF surface mesh
+
+<ObjViewer :script="flair" />
+
+---
+
+<script setup lang="ts">
+import { insideCrescentKick } from './showcases/inside-crescent-kick'
+</script>
+
+# Animated FBX inside crescent kick
+
+<ObjViewer :script="insideCrescentKick" />
+
+---
+
+<script setup lang="ts">
+import { dancingSkeleton } from './showcases/dancing-skeleton'
+</script>
+
+<ObjViewer :script="dancingSkeleton" />
+
+---
+
+<script setup lang="ts">
+import { butterflyKick } from './showcases/butterfly-kick'
+</script>
+
+<ObjViewer :script="butterflyKick" />

@@ -1,23 +1,24 @@
 *
 
+!*/
+
 !.git*
 
-!/.github/
-!/.github/workflows/
 !/.github/workflows/deploy.yml
 
 !/README.md
 
 !/package.json
-!/pnpm-lock.yaml
+!/pnpm*.yaml
 
 !/slides.md
-
-!/components
 !/components/*.vue
-
-!/public
 !/public/**
+
+!/demo
+!/showcases/*.js
+!/showcases/*.ts
 
 node_modules
 dist
+generated

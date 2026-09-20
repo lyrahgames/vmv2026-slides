@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "build": "slidev build",
-    "dev": "slidev --open",
+    "demo:build": "pnpm --dir demo run build",
+    "build:all": "pnpm run demo:build && pnpm run build",
+    "dev": "pnpm run demo:build && slidev --open",
     "export": "slidev export"
   },
   "dependencies": {
