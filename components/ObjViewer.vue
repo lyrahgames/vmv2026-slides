@@ -31,9 +31,10 @@ export interface AnimationInfo {
 }
 
 export interface MotionLineConfig {
-  algorithm: 'all' | 'random' | 'uniform'
+  algorithm: 'all' | 'random' | 'uniform' | 'uniform-spacetime'
   count?: number
   fps?: number
+  samplingRate?: number
 }
 
 export type ViewerScript = (
@@ -443,6 +444,13 @@ async function start() {
         }
         if (config.algorithm === 'uniform') {
           return viewerHandle.setMotionLinesUniform(config.count ?? 512, fps)
+        }
+        if (config.algorithm === 'uniform-spacetime') {
+          return viewerHandle.setMotionLinesUniformSpacetime(
+            config.count ?? 512,
+            config.samplingRate ?? 8,
+            fps,
+          )
         }
         return viewerHandle.setMotionLinesRandom(config.count ?? 512, fps)
       },
