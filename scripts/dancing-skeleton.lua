@@ -18,7 +18,7 @@ reset_camera()
 
 if #animations > 0 then
   select_animation(1)
-  set_motion_lines_random(128, 15)
+  set_motion_lines_uniform(128, 15)
   print_memory_usage("after dancing-skeleton motion-line extraction")
   set_animation_speed(1.0)
   play_animation()

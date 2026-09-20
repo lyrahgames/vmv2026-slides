@@ -128,3 +128,13 @@ import { butterflyKick } from './showcases/butterfly-kick'
 </script>
 
 <ObjViewer :script="butterflyKick" />
+
+---
+
+<script setup lang="ts">
+import { butterflyKickUniform } from './showcases/butterfly-kick'
+</script>
+
+# Butterfly kick with uniform seed selection
+
+<ObjViewer :script="butterflyKickUniform" />

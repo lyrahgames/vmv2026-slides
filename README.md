@@ -13,13 +13,14 @@ Lua, after loading and selecting an FBX/glTF animation:
 ```lua
 set_motion_lines_random(512, 30) -- count, samples per second
 -- or: set_motion_lines_all(30)
+-- or: set_motion_lines_uniform(512, 30) -- greedy spatial coverage
 ```
 
 The browser API has the equivalent asynchronous call:
 
 ```ts
 viewer.setBackgroundColor([1, 1, 1]) // normalized linear RGB
-await viewer.setMotionLines({ algorithm: 'random', count: 512, fps: 30 })
+await viewer.setMotionLines({ algorithm: 'uniform', count: 512, fps: 30 })
 ```
 
 Native Lua scripts use the same normalized RGB convention with one-based

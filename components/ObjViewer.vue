@@ -31,7 +31,7 @@ export interface AnimationInfo {
 }
 
 export interface MotionLineConfig {
-  algorithm: 'all' | 'random'
+  algorithm: 'all' | 'random' | 'uniform'
   count?: number
   fps?: number
 }
@@ -440,6 +440,9 @@ async function start() {
         const fps = config.fps ?? 30
         if (config.algorithm === 'all') {
           return viewerHandle.setMotionLinesAll(fps)
+        }
+        if (config.algorithm === 'uniform') {
+          return viewerHandle.setMotionLinesUniform(config.count ?? 512, fps)
         }
         return viewerHandle.setMotionLinesRandom(config.count ?? 512, fps)
       },

@@ -14,7 +14,7 @@ export async function insideCrescentKick(viewer: any) {
   // The provided file exposes the kick clip as animation zero.
   if (animations.length > 0) {
     viewer.selectAnimation(0)
-    await viewer.setMotionLines({ algorithm: 'random', count: 512, fps: 30 })
+    await viewer.setMotionLines({ algorithm: 'uniform', count: 256, fps: 30 })
     viewer.setAnimationSpeed(1.0)
     viewer.playAnimation()
   }

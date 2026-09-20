@@ -3,7 +3,17 @@
 // ObjViewer fetches the self-contained FBX as bytes and passes it to the
 // shared Rust decoder, so this example exercises the same animation path as
 // the native Lua script.
-export async function butterflyKick(viewer: any) {
+export function butterflyKick(viewer: any) {
+  return runButterflyKick(viewer, 'random')
+}
+
+// Same scene and camera path as the main showcase, but with the greedy
+// farthest-point seed selector so the two slides can be compared directly.
+export function butterflyKickUniform(viewer: any) {
+  return runButterflyKick(viewer, 'uniform')
+}
+
+async function runButterflyKick(viewer: any, algorithm: 'random' | 'uniform') {
   viewer.setBackgroundColor([1, 1, 1])
   // URL-encode the filename because the public asset name contains spaces.
   const animations = await viewer.loadFbx('/models/Butterfly%20Kick.fbx')
@@ -14,7 +24,7 @@ export async function butterflyKick(viewer: any) {
   // The supplied file exposes its demonstration clip as animation zero.
   if (animations.length > 0) {
     viewer.selectAnimation(0)
-    await viewer.setMotionLines({ algorithm: 'random', count: 512, fps: 30 })
+    await viewer.setMotionLines({ algorithm, count: 64, fps: 30 })
     viewer.setAnimationSpeed(1.0)
     viewer.playAnimation()
   }

@@ -13,7 +13,7 @@ export async function flair(viewer: any) {
   // The first imported FBX clip is exposed as animation zero in JavaScript.
   if (animations.length > 0) {
     viewer.selectAnimation(0)
-    await viewer.setMotionLines({ algorithm: 'random', count: 512, fps: 30 })
+    await viewer.setMotionLines({ algorithm: 'uniform', count: 128, fps: 30 })
     viewer.setAnimationSpeed(1.0)
     viewer.playAnimation()
   }
