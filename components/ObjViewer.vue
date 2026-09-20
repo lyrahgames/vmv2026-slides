@@ -16,14 +16,24 @@ export interface ViewerApi {
   pauseAnimation(): void
   setAnimationTime(time: number): void
   setAnimationSpeed(speed: number): void
+  setBackgroundColor(color: [number, number, number]): void
+  setMotionLines(config: MotionLineConfig): Promise<void>
+  clearMotionLines(): void
   resetCamera(): void
   setCamera(config: { eye: number[]; target: number[]; up: number[]; fov: number }): void
+  setCameraFollowMesh(config: { offset: number[]; up: number[]; fov: number }): void
 }
 
 export interface AnimationInfo {
   name: string
   duration: number
   channels: { node: number; property: string; interpolation: string }[]
+}
+
+export interface MotionLineConfig {
+  algorithm: 'all' | 'random'
+  count?: number
+  fps?: number
 }
 
 export type ViewerScript = (
@@ -157,12 +167,56 @@ function stop() {
   void queueViewerTransition(() => releaseLocalViewer())
 }
 
+// Keep playback controls at the component boundary so they work for every
+// browser showcase without requiring each slide script to build its own UI.
+// The Rust viewer remains the source of truth; these calls are harmless while
+// a slide is still loading because `handle` is optional.
+function playViewerAnimation() {
+  handle?.playAnimation()
+}
+
+function pauseViewerAnimation() {
+  handle?.pauseAnimation()
+}
+
+// Slidev renders the fixed-size slide content through a CSS transform. Fit the
+// viewer in that unscaled slide rectangle rather than guessing from the
+// browser viewport: the result remains correct at presentation, overview, and
+// export sizes. A small CSS-pixel bottom inset preserves visible slide padding.
+function fitViewerToSlide() {
+  const element = container.value
+  if (!element) return
+  const slide = element.closest<HTMLElement>('.slidev-slide-content')
+  if (!slide) return
+
+  const slideRect = slide.getBoundingClientRect()
+  const viewerRect = element.getBoundingClientRect()
+  if (slideRect.width <= 0 || slideRect.height <= 0 || viewerRect.width <= 0) return
+
+  const computedSlide = getComputedStyle(slide)
+  const declaredScale = Number.parseFloat(
+    computedSlide.getPropertyValue('--slidev-slide-scale'),
+  )
+  const measuredScale = slide.offsetWidth > 0 ? slideRect.width / slide.offsetWidth : 1
+  const scale = declaredScale > 0 ? declaredScale : measuredScale
+  if (!Number.isFinite(scale) || scale <= 0) return
+
+  const bottomPadding = 16
+  const availableHeight = (slideRect.bottom - viewerRect.top) / scale - bottomPadding
+  if (availableHeight <= 0) return
+
+  // 400 CSS pixels is large enough for the presentation while the measured
+  // bound prevents the canvas from extending through the slide's bottom edge.
+  const height = Math.max(1, Math.floor(Math.min(400, availableHeight)))
+  const nextHeight = `${height}px`
+  if (element.style.height !== nextHeight) element.style.height = nextHeight
+}
+
 function canvasSize(_entry?: ResizeObserverEntry) {
   // Slidev scales the complete slide with a CSS transform so that its fixed
-  // presentation canvas fits the browser viewport. `clientWidth` and
-  // `clientHeight` intentionally ignore that transform; using them here made
-  // the WebGPU backing store smaller than the pixels actually displayed and
-  // therefore made every embedded viewer look blurry.
+  // presentation canvas fits the browser viewport. Fit the CSS box first so
+  // the viewer cannot consume more than the remaining slide height.
+  fitViewerToSlide()
   const element = container.value ?? canvas.value!
   const displayed = element.getBoundingClientRect()
   if (displayed.width <= 0 || displayed.height <= 0) return
@@ -379,11 +433,27 @@ async function start() {
       setAnimationSpeed(speed) {
         viewerHandle.setAnimationSpeed(speed)
       },
+      setBackgroundColor(color) {
+        viewerHandle.setBackgroundColor(color)
+      },
+      setMotionLines(config) {
+        const fps = config.fps ?? 30
+        if (config.algorithm === 'all') {
+          return viewerHandle.setMotionLinesAll(fps)
+        }
+        return viewerHandle.setMotionLinesRandom(config.count ?? 512, fps)
+      },
+      clearMotionLines() {
+        viewerHandle.clearMotionLines()
+      },
       resetCamera() {
         viewerHandle.reset_camera()
       },
       setCamera(config) {
         viewerHandle.set_camera(config.eye, config.target, config.up, config.fov)
+      },
+      setCameraFollowMesh(config) {
+        viewerHandle.setCameraFollowMesh(config.offset, config.up, config.fov)
       },
       }
       // The slide script may start animation immediately after loading its mesh.
@@ -503,6 +573,14 @@ onBeforeUnmount(() => {
   <!-- The canvas is styled in CSS but sized in physical pixels by start(). -->
   <div ref="container" class="obj-viewer">
     <canvas ref="canvas" tabindex="0" />
+    <div class="viewer-controls" @pointerdown.stop>
+      <button type="button" aria-label="Play animation" @click.stop="playViewerAnimation">
+        Play
+      </button>
+      <button type="button" aria-label="Pause animation" @click.stop="pauseViewerAnimation">
+        Pause
+      </button>
+    </div>
     <div v-if="error" class="viewer-error">{{ error }}</div>
   </div>
 </template>
@@ -512,17 +590,49 @@ onBeforeUnmount(() => {
    notes while still preserving a useful interaction area. */
 .obj-viewer {
   position: relative;
+  box-sizing: border-box;
   width: 100%;
-  height: clamp(160px, 28vh, 220px);
+  max-width: 100%;
+  height: min(400px, calc(100% - 64px));
+  min-height: 1px;
+  max-height: 100%;
   overflow: hidden;
 }
 
 .obj-viewer canvas {
   /* CSS controls layout size; start() controls the physical backing store. */
   display: block;
+  max-width: 100%;
+  max-height: 100%;
   width: 100%;
   height: 100%;
   outline: none;
+}
+
+.viewer-controls {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  z-index: 2;
+  display: flex;
+  gap: 4px;
+}
+
+.viewer-controls button {
+  border: 1px solid rgb(255 255 255 / 35%);
+  border-radius: 4px;
+  padding: 3px 7px;
+  color: #f8fafc;
+  background: rgb(15 23 42 / 80%);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.viewer-controls button:hover,
+.viewer-controls button:focus-visible {
+  border-color: rgb(255 255 255 / 75%);
+  background: rgb(30 41 59 / 92%);
 }
 
 .viewer-error {

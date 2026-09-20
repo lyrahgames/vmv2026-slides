@@ -1,6 +1,7 @@
 // This example demonstrates that JavaScript can drive the Rust camera without
 // owning the renderer or creating another WebGPU context.
 export async function lilium(viewer: any) {
+  viewer.setBackgroundColor([1, 1, 1])
   // The OBJ is loaded before animation starts so the first camera command is
   // applied to a real mesh rather than an empty/default scene.
   await viewer.loadObj('/models/lilium.obj')
