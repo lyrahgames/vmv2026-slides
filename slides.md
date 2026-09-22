@@ -140,6 +140,36 @@ import { butterflyKickUniform } from './showcases/butterfly-kick'
 <ObjViewer :script="butterflyKickUniform" />
 
 ---
+
+<script setup lang="ts">
+import { butterflyKickUniformSpacetime } from './showcases/butterfly-kick'
+</script>
+
+# Butterfly kick with uniform space-time seeding
+
+<ObjViewer :script="butterflyKickUniformSpacetime" />
+
+---
+
+<script setup lang="ts">
+import { butterflyKickExtendedImportanceSpacetime } from './showcases/butterfly-kick'
+</script>
+
+# Butterfly kick with stochastic extended importance space-time seeding
+
+<ObjViewer :script="butterflyKickExtendedImportanceSpacetime" />
+
+---
+
+<script setup lang="ts">
+import { butterflyKickImportanceSpacetime } from './showcases/butterfly-kick'
+</script>
+
+# Butterfly kick with deterministic importance space-time seeding
+
+<ObjViewer :script="butterflyKickImportanceSpacetime" />
+
+---
 layout: default
 class: repositories-slide
 ---

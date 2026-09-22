@@ -20,6 +20,7 @@ export interface ViewerApi {
   setMotionLines(config: MotionLineConfig): Promise<void>
   clearMotionLines(): void
   resetCamera(): void
+  frameAnimation(): void
   setCamera(config: { eye: number[]; target: number[]; up: number[]; fov: number }): void
   setCameraFollowMesh(config: { offset: number[]; up: number[]; fov: number }): void
 }
@@ -31,10 +32,17 @@ export interface AnimationInfo {
 }
 
 export interface MotionLineConfig {
-  algorithm: 'all' | 'random' | 'uniform' | 'uniform-spacetime'
+  algorithm:
+    | 'all'
+    | 'random'
+    | 'uniform'
+    | 'uniform-spacetime'
+    | 'importance-spacetime'
+    | 'extended-importance-spacetime'
   count?: number
   fps?: number
   samplingRate?: number
+  selection?: 'deterministic' | 'stochastic'
 }
 
 export type ViewerScript = (
@@ -452,6 +460,23 @@ async function start() {
             fps,
           )
         }
+        const stochastic = config.selection === 'stochastic'
+        if (config.algorithm === 'importance-spacetime') {
+          return viewerHandle.setMotionLinesImportanceSpacetime(
+            config.count ?? 512,
+            config.samplingRate ?? 8,
+            stochastic,
+            fps,
+          )
+        }
+        if (config.algorithm === 'extended-importance-spacetime') {
+          return viewerHandle.setMotionLinesExtendedImportanceSpacetime(
+            config.count ?? 512,
+            config.samplingRate ?? 8,
+            stochastic,
+            fps,
+          )
+        }
         return viewerHandle.setMotionLinesRandom(config.count ?? 512, fps)
       },
       clearMotionLines() {
@@ -459,6 +484,9 @@ async function start() {
       },
       resetCamera() {
         viewerHandle.reset_camera()
+      },
+      frameAnimation() {
+        viewerHandle.frameAnimation()
       },
       setCamera(config) {
         viewerHandle.set_camera(config.eye, config.target, config.up, config.fov)

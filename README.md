@@ -15,6 +15,8 @@ set_motion_lines_random(512, 30) -- count, samples per second
 -- or: set_motion_lines_all(30)
 -- or: set_motion_lines_uniform(512, 30) -- greedy spatial coverage
 -- or: set_motion_lines_uniform_spacetime(512, 8, 30) -- seed FPS, line FPS
+-- or: set_motion_lines_importance_spacetime(512, 8, false, 30) -- deterministic
+-- or: set_motion_lines_extended_importance_spacetime(512, 8, true, 30) -- stochastic + travel
 ```
 
 The browser API has the equivalent asynchronous call:
@@ -24,6 +26,14 @@ viewer.setBackgroundColor([1, 1, 1]) // normalized linear RGB
 await viewer.setMotionLines({ algorithm: 'uniform', count: 512, fps: 30 })
 await viewer.setMotionLines({
   algorithm: 'uniform-spacetime', count: 512, samplingRate: 8, fps: 30,
+})
+await viewer.setMotionLines({
+  algorithm: 'importance-spacetime', count: 512, samplingRate: 8,
+  selection: 'stochastic', fps: 30,
+})
+await viewer.setMotionLines({
+  algorithm: 'extended-importance-spacetime', count: 512, samplingRate: 8,
+  selection: 'deterministic', fps: 30,
 })
 ```
 

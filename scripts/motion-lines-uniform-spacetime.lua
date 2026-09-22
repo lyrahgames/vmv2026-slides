@@ -18,7 +18,7 @@ reset_camera()
 
 if #animations > 0 then
   select_animation(1)
-  set_motion_lines_uniform_spacetime(128, 30, 60)
+  set_motion_lines_uniform_spacetime(64, 30, 60)
   print_memory_usage("after spacetime-seed motion-line extraction")
   set_animation_speed(1.0)
   play_animation()

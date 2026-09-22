@@ -13,6 +13,24 @@ export function butterflyKickUniform(viewer: any) {
   return runButterflyKick(viewer, 'uniform')
 }
 
+// Fixed-camera space-time variants share one complete-clip framing so the
+// seeding strategies can be compared directly.
+const BUTTERFLY_KICK_LINE_COUNT = 64
+const BUTTERFLY_KICK_UNIFORM_SPACETIME_SAMPLING_RATE = 30
+const BUTTERFLY_KICK_IMPORTANCE_SPACETIME_SAMPLING_RATE = 8
+
+export function butterflyKickUniformSpacetime(viewer: any) {
+  return runButterflyKickSpacetime(viewer, 'uniform-spacetime')
+}
+
+export function butterflyKickExtendedImportanceSpacetime(viewer: any) {
+  return runButterflyKickSpacetime(viewer, 'extended-importance-spacetime', 'stochastic')
+}
+
+export function butterflyKickImportanceSpacetime(viewer: any) {
+  return runButterflyKickSpacetime(viewer, 'importance-spacetime', 'deterministic')
+}
+
 async function runButterflyKick(viewer: any, algorithm: 'random' | 'uniform') {
   viewer.setBackgroundColor([1, 1, 1])
   // URL-encode the filename because the public asset name contains spaces.
@@ -61,5 +79,32 @@ async function runButterflyKick(viewer: any, algorithm: 'random' | 'uniform') {
   return () => {
     active = false
     if (frameId !== undefined) cancelAnimationFrame(frameId)
+  }
+}
+
+async function runButterflyKickSpacetime(
+  viewer: any,
+  algorithm: 'uniform-spacetime' | 'importance-spacetime' | 'extended-importance-spacetime',
+  selection?: 'deterministic' | 'stochastic',
+) {
+  viewer.setBackgroundColor([1, 1, 1])
+  const animations = await viewer.loadFbx('/models/Butterfly%20Kick.fbx')
+
+  if (animations.length > 0) {
+    viewer.selectAnimation(0)
+    await viewer.setMotionLines({
+      algorithm,
+      count: BUTTERFLY_KICK_LINE_COUNT,
+      samplingRate:
+        algorithm === 'uniform-spacetime'
+          ? BUTTERFLY_KICK_UNIFORM_SPACETIME_SAMPLING_RATE
+          : BUTTERFLY_KICK_IMPORTANCE_SPACETIME_SAMPLING_RATE,
+      selection,
+      fps: 60,
+    })
+    // Frame the entire clip once. Playback changes only the mesh below.
+    viewer.frameAnimation()
+    viewer.setAnimationSpeed(1.0)
+    viewer.playAnimation()
   }
 }
