@@ -144,11 +144,9 @@ layout: default
 class: repositories-slide
 ---
 
-### OPEN SOURCE
+<img class="cube-background" src="/illustrative-cube-with-speedlines.png" alt="" aria-hidden="true" />
 
-# Explore the project
-
-Visit the slides or try the interactive demo.
+# Thank you very much!
 
 | [![QR code for the hosted slides](/generated/qr/slides.svg)](https://lyrahgames.github.io/vmv2026-slides) | [![QR code for the vmv2026-demo GitHub repository](/generated/qr/demo.svg)](https://github.com/lyrahgames/vmv2026-demo) |
 |:---:|:---:|
@@ -156,11 +154,13 @@ Visit the slides or try the interactive demo.
 | `lyrahgames.github.io/vmv2026-slides` | `github.com/lyrahgames/vmv2026-demo` |
 
 <style>
-.repositories-slide{background:#fff;color:var(--ink);font-family:'DM Sans',sans-serif}
-.repositories-slide h3{margin:0 0 12px;color:var(--coral);font-size:14px;letter-spacing:.16em}
-.repositories-slide h1{margin:0;font-family:'Space Grotesk',sans-serif;font-size:38px;line-height:1;letter-spacing:-.04em}
+.repositories-slide{position:relative;overflow:hidden;background:#fff;color:var(--ink);font-family:'DM Sans',sans-serif;display:flex;flex-direction:column}
+.repositories-slide{padding:8% 8%;box-sizing:border-box}
+.repositories-slide .cube-background{position:absolute;top:24%;right:-42%;z-index:0;width:150%;height:auto;opacity:.22;transform:rotate(18deg);transform-origin:top right;pointer-events:none}
+.repositories-slide h1,.repositories-slide table{position:relative;z-index:1}
+.repositories-slide h1{margin:0 0 12px;font-family:'Space Grotesk',sans-serif;font-size:38px;line-height:1;letter-spacing:-.04em}
 .repositories-slide>p{margin:14px 0 26px;color:var(--muted);font-size:16px}
-.repositories-slide table{width:100%;max-width:900px;margin:0 auto;border-collapse:separate;border-spacing:28px 0;table-layout:fixed}
+.repositories-slide table{width:100%;max-width:900px;margin:auto;border-collapse:separate;border-spacing:28px 0;table-layout:fixed}
 .repositories-slide th,.repositories-slide td{width:50%;padding:0 22px;text-align:center;vertical-align:middle;border-left:1px solid #b6d8d7;border-right:1px solid #b6d8d7}
 .repositories-slide th{padding-top:20px;border-top:1px solid #b6d8d7;border-radius:24px 24px 0 0}
 .repositories-slide th img{display:block;width:min(100%,230px);height:auto;margin:0 auto}
@@ -170,4 +170,3 @@ Visit the slides or try the interactive demo.
 .repositories-slide a,.repositories-slide a:hover,.repositories-slide a:focus{border:0!important;box-shadow:none!important;background-image:none!important;color:var(--ink);text-decoration:none!important}
 .repositories-slide a:hover,.repositories-slide a:focus{color:var(--teal)}
 </style>
-
