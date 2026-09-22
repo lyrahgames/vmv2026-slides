@@ -10,12 +10,16 @@
 
 !/package.json
 !/pnpm*.yaml
+!/vite.config.js
+!/global-top.vue
+!/global-bottom.vue
 
 !/slides.md
 !/components/*.vue
 !/public/**
 !/scripts/
 !/scripts/*.lua
+!/scripts/generate-qr-codes.js
 
 !/demo
 !/showcases/*.js
@@ -24,3 +28,4 @@
 node_modules
 dist
 generated
+/public/generated/
