@@ -132,6 +132,16 @@ import { butterflyKick } from './showcases/butterfly-kick'
 ---
 
 <script setup lang="ts">
+import { butterflyKickDashed } from './showcases/butterfly-kick'
+</script>
+
+# Butterfly kick with dashed motion lines
+
+<ObjViewer :script="butterflyKickDashed" fallback="/previews/butterfly-kick-dashed.png" fallback-alt="Butterfly kick dashed motion-line preview" />
+
+---
+
+<script setup lang="ts">
 import { butterflyKickUniform } from './showcases/butterfly-kick'
 </script>
 

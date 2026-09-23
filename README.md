@@ -12,6 +12,7 @@ Lua, after loading and selecting an FBX/glTF animation:
 
 ```lua
 set_motion_lines_random(512, 30) -- count, samples per second
+set_motion_line_style("dashed") -- optional; default is "teaser"
 -- or: set_motion_lines_all(30)
 -- or: set_motion_lines_uniform(512, 30) -- greedy spatial coverage
 -- or: set_motion_lines_uniform_spacetime(512, 8, 30) -- seed FPS, line FPS
@@ -24,6 +25,7 @@ The browser API has the equivalent asynchronous call:
 ```ts
 viewer.setBackgroundColor([1, 1, 1]) // normalized linear RGB
 await viewer.setMotionLines({ algorithm: 'uniform', count: 512, fps: 30 })
+viewer.setMotionLineStyle('dashed') // optional; no trajectory rebuild
 await viewer.setMotionLines({
   algorithm: 'uniform-spacetime', count: 512, samplingRate: 8, fps: 30,
 })

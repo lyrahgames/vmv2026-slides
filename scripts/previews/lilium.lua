@@ -1,0 +1,5 @@
+set_background_color({ 1, 1, 1 })
+load_obj("../public/models/lilium.obj")
+reset_camera()
+show_scene()
+save_screenshot("../public/previews/lilium.png")

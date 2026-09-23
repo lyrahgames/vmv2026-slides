@@ -20,6 +20,7 @@ export interface ViewerApi {
   hideScene(): void
   showScene(): void
   setMotionLines(config: MotionLineConfig): Promise<void>
+  setMotionLineStyle(style: MotionLineStyle): void
   clearMotionLines(): void
   resetCamera(): void
   frameAnimation(): void
@@ -46,6 +47,8 @@ export interface MotionLineConfig {
   samplingRate?: number
   selection?: 'deterministic' | 'stochastic'
 }
+
+export type MotionLineStyle = 'teaser' | 'dashed'
 
 export type ViewerScript = (
   viewer: ViewerApi,
@@ -516,6 +519,9 @@ async function start() {
           )
         }
         return viewerHandle.setMotionLinesRandom(config.count ?? 512, fps)
+      },
+      setMotionLineStyle(style) {
+        viewerHandle.setMotionLineStyle(style)
       },
       clearMotionLines() {
         viewerHandle.clearMotionLines()

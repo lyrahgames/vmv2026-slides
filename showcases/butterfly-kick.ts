@@ -7,6 +7,12 @@ export function butterflyKick(viewer: any) {
   return runButterflyKick(viewer, 'random')
 }
 
+// Same seeds as the default butterfly-kick example, rendered with the
+// Compasso-derived dashed fragment style.
+export function butterflyKickDashed(viewer: any) {
+  return runButterflyKick(viewer, 'random', 'dashed')
+}
+
 // Same scene and camera path as the main showcase, but with the greedy
 // farthest-point seed selector so the two slides can be compared directly.
 export function butterflyKickUniform(viewer: any) {
@@ -31,7 +37,11 @@ export function butterflyKickImportanceSpacetime(viewer: any) {
   return runButterflyKickSpacetime(viewer, 'importance-spacetime', 'deterministic')
 }
 
-async function runButterflyKick(viewer: any, algorithm: 'random' | 'uniform') {
+async function runButterflyKick(
+  viewer: any,
+  algorithm: 'random' | 'uniform',
+  style: 'teaser' | 'dashed' = 'teaser',
+) {
   viewer.setBackgroundColor([1, 1, 1])
   // URL-encode the filename because the public asset name contains spaces.
   const animations = await viewer.loadFbx('/models/Butterfly%20Kick.fbx')
@@ -43,6 +53,7 @@ async function runButterflyKick(viewer: any, algorithm: 'random' | 'uniform') {
   if (animations.length > 0) {
     viewer.selectAnimation(0)
     await viewer.setMotionLines({ algorithm, count: 64, fps: 30 })
+    viewer.setMotionLineStyle(style)
     viewer.setAnimationSpeed(1.0)
     viewer.playAnimation()
   }
