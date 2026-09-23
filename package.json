@@ -5,6 +5,7 @@
   "scripts": {
     "build": "slidev build",
     "demo:build": "pnpm --dir demo run build",
+    "generate:previews": "pnpm --dir demo run previews",
     "build:all": "pnpm run demo:build && pnpm run build",
     "dev": "pnpm run demo:build && slidev --open",
     "export": "slidev export --per-slide"

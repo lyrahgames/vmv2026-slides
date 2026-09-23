@@ -91,7 +91,7 @@ import { lilium } from './showcases/lilium'
 
 # JavaScript-scripted camera path
 
-<ObjViewer :script="lilium" />
+<ObjViewer :script="lilium" fallback="/previews/lilium.png" fallback-alt="Lilium surface mesh preview" />
 
 ---
 
@@ -101,7 +101,7 @@ import { flair } from './showcases/flair'
 
 # Animated glTF surface mesh
 
-<ObjViewer :script="flair" />
+<ObjViewer :script="flair" fallback="/previews/flair.png" fallback-alt="Flair animated surface mesh preview" />
 
 ---
 
@@ -111,7 +111,7 @@ import { insideCrescentKick } from './showcases/inside-crescent-kick'
 
 # Animated FBX inside crescent kick
 
-<ObjViewer :script="insideCrescentKick" />
+<ObjViewer :script="insideCrescentKick" fallback="/previews/inside-crescent-kick.png" fallback-alt="Inside crescent kick surface mesh preview" />
 
 ---
 
@@ -119,7 +119,7 @@ import { insideCrescentKick } from './showcases/inside-crescent-kick'
 import { dancingSkeleton } from './showcases/dancing-skeleton'
 </script>
 
-<ObjViewer :script="dancingSkeleton" />
+<ObjViewer :script="dancingSkeleton" fallback="/previews/dancing-skeleton.png" fallback-alt="Dancing skeleton surface mesh preview" />
 
 ---
 
@@ -127,7 +127,7 @@ import { dancingSkeleton } from './showcases/dancing-skeleton'
 import { butterflyKick } from './showcases/butterfly-kick'
 </script>
 
-<ObjViewer :script="butterflyKick" />
+<ObjViewer :script="butterflyKick" fallback="/previews/butterfly-kick.png" fallback-alt="Butterfly kick motion-line preview" />
 
 ---
 
@@ -137,7 +137,7 @@ import { butterflyKickUniform } from './showcases/butterfly-kick'
 
 # Butterfly kick with uniform seed selection
 
-<ObjViewer :script="butterflyKickUniform" />
+<ObjViewer :script="butterflyKickUniform" fallback="/previews/butterfly-kick-uniform.png" fallback-alt="Butterfly kick uniform seed preview" />
 
 ---
 
@@ -147,7 +147,7 @@ import { butterflyKickUniformSpacetime } from './showcases/butterfly-kick'
 
 # Butterfly kick with uniform space-time seeding
 
-<ObjViewer :script="butterflyKickUniformSpacetime" />
+<ObjViewer :script="butterflyKickUniformSpacetime" fallback="/previews/butterfly-kick-uniform-spacetime.png" fallback-alt="Butterfly kick uniform space-time preview" />
 
 ---
 
@@ -157,7 +157,7 @@ import { butterflyKickExtendedImportanceSpacetime } from './showcases/butterfly-
 
 # Butterfly kick with stochastic extended importance space-time seeding
 
-<ObjViewer :script="butterflyKickExtendedImportanceSpacetime" />
+<ObjViewer :script="butterflyKickExtendedImportanceSpacetime" fallback="/previews/butterfly-kick-extended-importance-spacetime.png" fallback-alt="Butterfly kick extended importance preview" />
 
 ---
 
@@ -167,7 +167,7 @@ import { butterflyKickImportanceSpacetime } from './showcases/butterfly-kick'
 
 # Butterfly kick with deterministic importance space-time seeding
 
-<ObjViewer :script="butterflyKickImportanceSpacetime" />
+<ObjViewer :script="butterflyKickImportanceSpacetime" fallback="/previews/butterfly-kick-importance-spacetime.png" fallback-alt="Butterfly kick importance preview" />
 
 ---
 layout: default

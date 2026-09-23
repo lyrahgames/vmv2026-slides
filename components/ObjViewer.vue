@@ -2,8 +2,8 @@
 // This component is deliberately thin: it manages Vue/Slidev lifecycle, while
 // the generated WASM module owns wgpu rendering and the single shared winit
 // event loop.
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { useSlideContext } from '@slidev/client'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { onSlideLeave, useNav, useSlideContext } from '@slidev/client'
 
 // Keeping this API small makes slide scripts independent of the Rust handle.
 // Each method ultimately queues a command for the active WebAssembly viewer.
@@ -17,6 +17,8 @@ export interface ViewerApi {
   setAnimationTime(time: number): void
   setAnimationSpeed(speed: number): void
   setBackgroundColor(color: [number, number, number]): void
+  hideScene(): void
+  showScene(): void
   setMotionLines(config: MotionLineConfig): Promise<void>
   clearMotionLines(): void
   resetCamera(): void
@@ -75,6 +77,10 @@ function queueViewerTransition(operation: () => Promise<void>): Promise<void> {
 // the viewport.
 const props = defineProps<{
   script: ViewerScript
+  // Static previews are useful in overview/export/fallback modes, but remain
+  // optional so existing interactive viewers do not need an image immediately.
+  fallback?: string
+  fallbackAlt?: string
   // Normal slide viewers reuse one page-wide viewer.  This opt-in flag is for
   // demonstrations that intentionally need two independent GPU surfaces.
   independent?: boolean
@@ -84,6 +90,7 @@ const props = defineProps<{
 // DOM attribute. This is the authoritative way to distinguish the real slide
 // from overview, presenter, and next-slide preview copies.
 const { $renderContext } = useSlideContext()
+const { isPrintMode } = useNav()
 
 // A stable token prevents a stale slide from releasing a newer slide's viewer.
 const owner = Symbol('ObjViewer')
@@ -92,6 +99,18 @@ const owner = Symbol('ObjViewer')
 const container = ref<HTMLElement>()
 const canvas = ref<HTMLCanvasElement>()
 const error = ref('')
+const sceneReady = ref(false)
+const webgpuAvailable = ref<boolean | undefined>()
+
+const fallbackUrl = computed(() => props.fallback ? assetUrl(props.fallback).toString() : '')
+const fallbackVisible = computed(() => Boolean(
+  props.fallback && (
+    isPrintMode.value ||
+    $renderContext.value !== 'slide' ||
+    sceneReady.value === false ||
+    webgpuAvailable.value === false
+  ),
+))
 
 // IntersectionObserver prevents hidden Slidev slides from creating competing
 // canvas contexts.  There is still one Rust event loop, but only one visible
@@ -166,14 +185,19 @@ function stop() {
   // Invalidate promises that have not resumed yet.  This avoids attaching a
   // viewer after navigation has already made this component invisible.
   run += 1
-  // Stop slide-specific animation before disposing the Rust handle.
-  cleanup?.()
-  cleanup = undefined
+  hideLocalScene()
 
   // Remove ownership immediately. The actual detach is serialized below so a
   // new visible slide waits until the old WebGPU surface is really gone.
   if (activeViewer?.owner === owner) activeViewer = undefined
   void queueViewerTransition(() => releaseLocalViewer())
+}
+
+function hideLocalScene() {
+  sceneReady.value = false
+  cleanup?.()
+  cleanup = undefined
+  handle?.hideScene()
 }
 
 // Keep playback controls at the component boundary so they work for every
@@ -288,11 +312,12 @@ function assetUrl(path: string): URL {
 
 async function start() {
   // An observer can report visibility more than once; do not initialize twice.
-  if (handle || startPromise) return
+  if (handle || startPromise || isPrintMode.value) return
 
   // Capture this attempt's generation before any await expression.
   const currentRun = ++run
   error.value = ''
+  sceneReady.value = false
 
   const operation = queueViewerTransition(async () => {
     // Slidev overview, presenter, and presenter-preview pages contain copies
@@ -321,20 +346,24 @@ async function start() {
       // provide the WebGPU API required by wgpu.
       const gpu = (navigator as any).gpu
       if (!gpu) {
+        webgpuAvailable.value = false
         throw new Error(
           'WebGPU is unavailable in this browser or is disabled. Use a WebGPU-capable Chromium/Edge browser or enable WebGPU in Firefox.',
         )
       }
       if (!(canvas.value as any)?.getContext('webgpu')) {
+        webgpuAvailable.value = false
         throw new Error(
           'This canvas could not create a WebGPU context. The browser may have WebGPU disabled, or the canvas may already be owned by another renderer.',
         )
       }
       if (!(await gpu.requestAdapter())) {
+        webgpuAvailable.value = false
         throw new Error(
           'WebGPU is present but no usable GPU adapter was found. Check browser GPU settings and hardware acceleration.',
         )
       }
+      webgpuAvailable.value = true
 
       // Dynamic import keeps the WASM bundle out of slides that do not use this
       // component until the component is actually visible.
@@ -367,6 +396,9 @@ async function start() {
       // Capture the candidate locally. Animation callbacks must not resolve the
       // mutable global `handle` after stop() has cleared it.
       const viewerHandle = candidate
+      // A reused Viewer may still contain the previous slide's scene. Keep it
+      // hidden until this slide's complete script has installed its scene.
+      viewerHandle.hideScene()
 
       const viewer: ViewerApi = {
       async loadObj(path) {
@@ -445,6 +477,12 @@ async function start() {
       setBackgroundColor(color) {
         viewerHandle.setBackgroundColor(color)
       },
+      hideScene() {
+        viewerHandle.hideScene()
+      },
+      showScene() {
+        viewerHandle.showScene()
+      },
       setMotionLines(config) {
         const fps = config.fps ?? 30
         if (config.algorithm === 'all') {
@@ -505,6 +543,9 @@ async function start() {
         return
       }
 
+      viewerHandle.showScene()
+      sceneReady.value = true
+
       // Only a fully initialized, still-visible component becomes the active
       // owner. Later slide changes release it through the same serialized path.
       if (!props.independent) {
@@ -524,7 +565,9 @@ async function start() {
       if (candidate) await disposeCandidate(candidate)
       handle = undefined
       if (currentRun === run) {
-        error.value = e instanceof Error ? e.message : String(e)
+        if (!(webgpuAvailable.value === false && props.fallback)) {
+          error.value = e instanceof Error ? e.message : String(e)
+        }
       }
     }
   })
@@ -552,7 +595,7 @@ onMounted(() => {
         entry.intersectionRatio >= 0.6 &&
         entry.boundingClientRect.width > 0
       )
-      if (isVisibleSlide && $renderContext.value === 'slide') start()
+      if (isVisibleSlide && $renderContext.value === 'slide' && !isPrintMode.value) start()
       else stop()
     },
     { threshold: [0, 0.6] },
@@ -562,7 +605,7 @@ onMounted(() => {
   // context update.  Retrying here is what makes startup deterministic on the
   // first slide load and after Slidev switches back from its overview route.
   stopRenderContextWatch = watch($renderContext, (context) => {
-    if (context === 'slide' && isVisibleSlide) start()
+    if (context === 'slide' && isVisibleSlide && !isPrintMode.value) start()
     else if (context !== 'slide') stop()
   }, { flush: 'post' })
   resizeObserver = new ResizeObserver(([entry]) => {
@@ -593,6 +636,13 @@ onMounted(() => {
   window.addEventListener('resize', windowResizeListener, { passive: true })
 })
 
+// Slidev keeps slide component instances mounted across navigation. This hook
+// hides the retained Rust scene as soon as navigation changes, before the
+// IntersectionObserver necessarily reports that the old canvas is gone.
+onSlideLeave(() => {
+  if ($renderContext.value === 'slide') hideLocalScene()
+})
+
 onBeforeUnmount(() => {
   // Disconnect the observer and cancel all Rust/JavaScript resources owned by
   // this component before Vue removes its canvas.
@@ -611,6 +661,12 @@ onBeforeUnmount(() => {
 <template>
   <!-- The canvas is styled in CSS but sized in physical pixels by start(). -->
   <div ref="container" class="obj-viewer">
+    <img
+      v-if="fallbackVisible"
+      class="viewer-fallback"
+      :src="fallbackUrl"
+      :alt="props.fallbackAlt ?? ''"
+    />
     <canvas ref="canvas" tabindex="0" />
     <div class="viewer-controls" @pointerdown.stop>
       <button type="button" aria-label="Play animation" @click.stop="playViewerAnimation">
@@ -646,6 +702,17 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   outline: none;
+}
+
+.viewer-fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
 }
 
 .viewer-controls {

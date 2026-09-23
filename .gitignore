@@ -17,8 +17,11 @@
 !/slides.md
 !/components/*.vue
 !/public/**
+/public/previews/*.png
 !/scripts/
 !/scripts/*.lua
+!/scripts/previews/
+!/scripts/previews/*.lua
 !/scripts/generate-qr-codes.js
 
 !/demo
