@@ -15,6 +15,7 @@ export interface ViewerApi {
   playAnimation(): void
   pauseAnimation(): void
   setAnimationTime(time: number): void
+  getAnimationTime(): Promise<number>
   setAnimationSpeed(speed: number): void
   setBackgroundColor(color: [number, number, number]): void
   hideScene(): void
@@ -87,6 +88,16 @@ const props = defineProps<{
   // Normal slide viewers reuse one page-wide viewer.  This opt-in flag is for
   // demonstrations that intentionally need two independent GPU surfaces.
   independent?: boolean
+  // Introductory visual slides can let the canvas occupy the entire slide.
+  fullscreen?: boolean
+  // Playback controls are useful in explanatory slides but distract from a
+  // full-bleed animation.
+  controls?: boolean
+  // A slide may react to its click state by changing the active animation
+  // without replacing the canvas or resetting the camera.
+  animationSpeed?: number
+  // Called with the exact frame when a reactive speed change pauses playback.
+  onAnimationPaused?: (time: number) => void
 }>()
 
 // Slidev provides the rendering context through Vue injection rather than a
@@ -215,6 +226,21 @@ function pauseViewerAnimation() {
   handle?.pauseAnimation()
 }
 
+function applyRequestedAnimationSpeed(capturePause = false) {
+  const speed = props.animationSpeed
+  if (typeof speed === 'number' && Number.isFinite(speed)) {
+    const viewerHandle = handle
+    viewerHandle?.setAnimationSpeed(speed)
+    if (capturePause && speed === 0 && viewerHandle && props.onAnimationPaused) {
+      void viewerHandle.getAnimationTime()
+        .then((time: number) => props.onAnimationPaused?.(time))
+        .catch(() => {})
+    }
+  }
+}
+
+watch(() => props.animationSpeed, () => applyRequestedAnimationSpeed(true))
+
 // Slidev renders the fixed-size slide content through a CSS transform. Fit the
 // viewer in that unscaled slide rectangle rather than guessing from the
 // browser viewport: the result remains correct at presentation, overview, and
@@ -222,6 +248,10 @@ function pauseViewerAnimation() {
 function fitViewerToSlide() {
   const element = container.value
   if (!element) return
+  if (props.fullscreen) {
+    if (element.style.height !== '100%') element.style.height = '100%'
+    return
+  }
   const slide = element.closest<HTMLElement>('.slidev-slide-content')
   if (!slide) return
 
@@ -474,6 +504,9 @@ async function start() {
       setAnimationTime(time) {
         viewerHandle.setAnimationTime(time)
       },
+      getAnimationTime() {
+        return viewerHandle.getAnimationTime() as Promise<number>
+      },
       setAnimationSpeed(speed) {
         viewerHandle.setAnimationSpeed(speed)
       },
@@ -548,6 +581,11 @@ async function start() {
         handle = undefined
         return
       }
+
+      // The script establishes its default rate. Apply a reactive slide-level
+      // override afterwards so a click can change the rate without recreating
+      // the FBX scene or changing its camera pose.
+      applyRequestedAnimationSpeed()
 
       viewerHandle.showScene()
       sceneReady.value = true
@@ -666,7 +704,7 @@ onBeforeUnmount(() => {
 
 <template>
   <!-- The canvas is styled in CSS but sized in physical pixels by start(). -->
-  <div ref="container" class="obj-viewer">
+  <div ref="container" class="obj-viewer" :class="{ 'obj-viewer--fullscreen': props.fullscreen }">
     <img
       v-if="fallbackVisible"
       class="viewer-fallback"
@@ -674,7 +712,7 @@ onBeforeUnmount(() => {
       :alt="props.fallbackAlt ?? ''"
     />
     <canvas ref="canvas" tabindex="0" />
-    <div class="viewer-controls" @pointerdown.stop>
+    <div v-if="props.controls !== false" class="viewer-controls" @pointerdown.stop>
       <button type="button" aria-label="Play animation" @click.stop="playViewerAnimation">
         Play
       </button>
@@ -698,6 +736,11 @@ onBeforeUnmount(() => {
   min-height: 1px;
   max-height: 100%;
   overflow: hidden;
+}
+
+.obj-viewer--fullscreen {
+  height: 100%;
+  max-height: none;
 }
 
 .obj-viewer canvas {

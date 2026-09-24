@@ -67,21 +67,81 @@ h1 em{color:var(--teal);font-style:normal}
 
 ---
 
-<!-- <video id="butterfly-first" controls autoplay loop muted playsinline src="/butterfly.webm"></video> -->
+<script setup lang="ts">
+import { computed } from 'vue'
+import { butterflyKickIntro, rememberButterflyKickIntroTime } from './showcases/butterfly-kick'
 
-<SlidevVideo autoplay loop>
-  <source src="/butterfly.webm" type="video/webm" />
-</SlidevVideo>
+const butterflyKickSpeed = computed(() => {
+  if ($clicks.value >= 2) return 0
+  if ($clicks.value >= 1) return 0.5
+  return 1
+})
+</script>
+
+<ObjViewer
+  :script="butterflyKickIntro"
+  :animation-speed="butterflyKickSpeed"
+  :on-animation-paused="rememberButterflyKickIntroTime"
+  fullscreen
+  :controls="false"
+/>
+<span v-click class="butterfly-kick-speed-click" aria-hidden="true"></span>
+<span v-click class="butterfly-kick-speed-click" aria-hidden="true"></span>
+
+<style>
+.butterfly-kick-speed-click{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+</style>
 
 ---
 
-![Gamy Grand Prix de l'ACF, 1913 motocyclette](/Gamy-Grd-prix-de-l_Acf-1913-Motocyclette.jpg)
+<div class="historical-image-slide">
+  <div class="historical-image-frame">
+    <img src="/Gamy-Grd-prix-de-l_Acf-1913-Motocyclette.jpg" alt="Gamy Grand Prix de l'ACF, 1913 motocyclette" />
+    <a
+      class="historical-image-source"
+      href="https://www.museemecanicart.com/wp-content/uploads/2016/06/Gamy-Grd-prix-de-l_Acf-1913-Motocyclette.jpg"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Open the source image"
+    >
+      <span class="historical-image-source-label">Image source</span>
+      <carbon-launch aria-hidden="true" class="historical-image-source-icon" />
+    </a>
+  </div>
+</div>
+
+<style>
+.historical-image-slide{display:grid;width:100%;height:100%;place-items:center;overflow:hidden}
+.historical-image-frame{position:relative;width:100%;aspect-ratio:950/471}
+.historical-image-frame>img{display:block;width:100%;height:100%}
+.historical-image-source{position:absolute;right:1.25rem;bottom:1.25rem;display:inline-flex;align-items:center;gap:0;padding:.45rem;border:1px solid #b6d8d7!important;border-radius:999px;box-shadow:none!important;background:rgb(255 255 255 / .92)!important;background-image:none!important;color:#133b50!important;font-size:.72rem;font-weight:600;text-decoration:none!important;opacity:.55;transition:gap .2s ease,padding .2s ease,border-color .2s ease,color .2s ease,opacity .2s ease}
+.historical-image-source-label{max-width:0;overflow:hidden;opacity:0;white-space:nowrap;transition:max-width .2s ease,opacity .15s ease}
+.historical-image-source-icon{width:1.15rem;height:1.15rem}
+.historical-image-source:hover,.historical-image-source:focus-visible{gap:.35rem;padding-left:.7rem;border-color:#087f7a!important;color:#087f7a!important;opacity:1}
+.historical-image-source:hover .historical-image-source-label,.historical-image-source:focus-visible .historical-image-source-label{max-width:10rem;opacity:1}
+</style>
 
 ---
 
-<SlidevVideo autoplay loop>
-  <source src="/butterfly-with-lines.webm" type="video/webm" />
-</SlidevVideo>
+<script setup lang="ts">
+import { computed } from 'vue'
+import { butterflyKickIntroWithMotionLines } from './showcases/butterfly-kick'
+
+const butterflyKickMotionLineSpeed = computed(() => {
+  if ($clicks.value >= 2) return 1
+  if ($clicks.value >= 1) return 0.5
+  return 0
+})
+</script>
+
+<ObjViewer
+  :script="butterflyKickIntroWithMotionLines"
+  :animation-speed="butterflyKickMotionLineSpeed"
+  fullscreen
+  :controls="false"
+/>
+<span v-click class="butterfly-kick-speed-click" aria-hidden="true"></span>
+<span v-click class="butterfly-kick-speed-click" aria-hidden="true"></span>
 
 ---
 

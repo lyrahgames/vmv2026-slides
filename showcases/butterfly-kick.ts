@@ -3,6 +3,50 @@
 // ObjViewer fetches the self-contained FBX as bytes and passes it to the
 // shared Rust decoder, so this example exercises the same animation path as
 // the native Lua script.
+let butterflyKickIntroPausedTime = 0
+
+export function rememberButterflyKickIntroTime(time: number) {
+  if (Number.isFinite(time)) butterflyKickIntroPausedTime = time
+}
+
+export async function butterflyKickIntro(viewer: any) {
+  await runButterflyKickIntro(viewer, false)
+}
+
+export async function butterflyKickIntroWithMotionLines(viewer: any) {
+  await runButterflyKickIntro(viewer, true, butterflyKickIntroPausedTime)
+}
+
+async function runButterflyKickIntro(
+  viewer: any,
+  withMotionLines: boolean,
+  initialTime?: number,
+) {
+  viewer.setBackgroundColor([1, 1, 1])
+  const animations = await viewer.loadFbx('/models/Butterfly%20Kick.fbx')
+
+  if (animations.length > 0) {
+    viewer.selectAnimation(0)
+    if (initialTime !== undefined) viewer.setAnimationTime(initialTime)
+    if (withMotionLines) {
+      await viewer.setMotionLines({ algorithm: 'random', count: 64, fps: 30 })
+    }
+    // The clip travels along +Z (roughly -70 to +510). Looking from -X maps
+    // that travel to screen-left → screen-right. These are deliberately
+    // absolute coordinates, not a mesh-follow or generic reset camera: the
+    // target sits at the centre of the complete route and the fixed 38° view
+    // keeps the performer at about half the viewport height.
+    viewer.setCamera({
+      eye: [-530, 86, 230],
+      target: [0, 86, 230],
+      up: [0, 1, 0],
+      fov: 38,
+    })
+    viewer.setAnimationSpeed(1.0)
+    viewer.playAnimation()
+  }
+}
+
 export function butterflyKick(viewer: any) {
   return runButterflyKick(viewer, 'random')
 }
