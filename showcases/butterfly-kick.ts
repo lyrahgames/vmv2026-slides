@@ -17,6 +17,26 @@ export async function butterflyKickIntroWithMotionLines(viewer: any) {
   await runButterflyKickIntro(viewer, true, butterflyKickIntroPausedTime)
 }
 
+// Initial pose and camera for the Temporal Filtering slide. Trajectories are
+// requested by that slide when its first seed reveal is reached.
+export async function butterflyKickTemporalFiltering(viewer: any) {
+  viewer.setBackgroundColor([1, 1, 1])
+  const animations = await viewer.loadFbx('/models/Butterfly%20Kick.fbx')
+  if (animations.length === 0) return
+
+  viewer.setMotionLinesVisible(false)
+  viewer.setSeedPointsVisible(false)
+  viewer.selectAnimation(0)
+  viewer.setAnimationTime(animations[0].duration * 0.5)
+  viewer.setCamera({
+    eye: [-530, 86, 230],
+    target: [0, 86, 230],
+    up: [0, 1, 0],
+    fov: 38,
+  })
+  viewer.setAnimationSpeed(1)
+}
+
 async function runButterflyKickIntro(
   viewer: any,
   withMotionLines: boolean,

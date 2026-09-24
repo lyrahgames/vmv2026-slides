@@ -23,6 +23,7 @@ export interface ViewerApi {
   setMotionLines(config: MotionLineConfig): Promise<void>
   setMotionLineStyle(style: MotionLineStyle): void
   clearMotionLines(): void
+  setMotionLinesVisible(visible: boolean): void
   setSeedPointsVisible(visible: boolean): void
   resetCamera(): void
   frameAnimation(): void
@@ -97,6 +98,8 @@ const props = defineProps<{
   // A slide may react to its click state by changing the active animation
   // without replacing the canvas or resetting the camera.
   animationSpeed?: number
+  // Slides that own substantial temporary GPU state can release it on leave.
+  releaseOnLeave?: boolean
   // Called with the exact frame when a reactive speed change pauses playback.
   onAnimationPaused?: (time: number) => void
 }>()
@@ -560,6 +563,9 @@ async function start() {
       clearMotionLines() {
         viewerHandle.clearMotionLines()
       },
+      setMotionLinesVisible(visible) {
+        viewerHandle.setMotionLinesVisible(visible)
+      },
       setSeedPointsVisible(visible) {
         viewerHandle.setSeedPointsVisible(visible)
       },
@@ -688,7 +694,10 @@ onMounted(() => {
 // hides the retained Rust scene as soon as navigation changes, before the
 // IntersectionObserver necessarily reports that the old canvas is gone.
 onSlideLeave(() => {
-  if ($renderContext.value === 'slide') hideLocalScene()
+  if ($renderContext.value === 'slide') {
+    if (props.releaseOnLeave) stop()
+    else hideLocalScene()
+  }
 })
 
 onBeforeUnmount(() => {

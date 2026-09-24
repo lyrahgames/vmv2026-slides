@@ -146,12 +146,57 @@ const butterflyKickMotionLineSpeed = computed(() => {
 ---
 
 <script setup lang="ts">
-import { lilium } from './showcases/lilium'
+import { watch } from 'vue'
+import { butterflyKickTemporalFiltering } from './showcases/butterfly-kick'
+
+let temporalViewer: any
+let trajectoriesRequested = false
+
+function applyTemporalFilteringClick() {
+  const viewer = temporalViewer
+  if (!viewer) return
+  const clicks = $clicks.value
+  viewer.setSeedPointsVisible(clicks >= 1)
+  viewer.setMotionLinesVisible(clicks >= 2)
+  if (clicks >= 3) viewer.playAnimation()
+  else viewer.pauseAnimation()
+
+  if (clicks >= 1 && !trajectoriesRequested) {
+    trajectoriesRequested = true
+    // Random selection gives a few readable seeds without uniform selection's
+    // expensive farthest-point search across the whole mesh.
+    void viewer.setMotionLines({ algorithm: 'random', count: 6, fps: 12 })
+      .catch((error: unknown) => console.error('Temporal Filtering motion lines:', error))
+  }
+}
+
+watch($clicks, applyTemporalFilteringClick)
+
+async function temporalFilteringScript(viewer: any) {
+  await butterflyKickTemporalFiltering(viewer)
+  temporalViewer = viewer
+  trajectoriesRequested = false
+  applyTemporalFilteringClick()
+  return () => {
+    if (temporalViewer === viewer) temporalViewer = undefined
+  }
+}
 </script>
 
-# JavaScript-scripted camera path
+# Temporal Filtering
 
-<ObjViewer :script="lilium" fallback="/previews/lilium.png" fallback-alt="Lilium surface mesh preview" />
+<ObjViewer
+  :script="temporalFilteringScript"
+  release-on-leave
+  :controls="false"
+/>
+<span v-click class="temporal-filtering-click" aria-hidden="true"></span>
+<span v-click class="temporal-filtering-click" aria-hidden="true"></span>
+<span v-click class="temporal-filtering-click" aria-hidden="true"></span>
+
+<style>
+.temporal-filtering-click{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+</style>
 
 ---
 
