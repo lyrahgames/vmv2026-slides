@@ -51,7 +51,12 @@ export interface MotionLineConfig {
   selection?: 'deterministic' | 'stochastic'
 }
 
-export type MotionLineStyle = 'teaser' | 'dashed' | 'full-trajectory'
+export type MotionLineStyle =
+  | 'teaser'
+  | 'dashed'
+  | 'full-trajectory'
+  | 'full-trajectory-window'
+  | 'teaser-unweighted'
 
 export type ViewerScript = (
   viewer: ViewerApi,
