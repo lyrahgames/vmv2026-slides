@@ -184,7 +184,7 @@ async function temporalFilteringScript(viewer: any) {
 }
 </script>
 
-# Temporal Filtering
+# Tracing
 
 <ObjViewer
   :script="temporalFilteringScript"
@@ -201,23 +201,23 @@ async function temporalFilteringScript(viewer: any) {
 
 ---
 
-<script setup lang="ts">
-import { flair } from './showcases/flair'
-</script>
+# Temporal Filter
 
-# Animated glTF surface mesh
+$$
+\mathrm{max}_{t\in [t_0-\tau, t_0]} v(t) \ge v_{\mathrm{min}}
+$$
 
-<ObjViewer :script="flair" fallback="/previews/flair.png" fallback-alt="Flair animated surface mesh preview" />
+$$
+s(t_0) - s(t_0 - \tau) \ge s_{\mathrm{min}}
+$$
 
 ---
 
-<script setup lang="ts">
-import { insideCrescentKick } from './showcases/inside-crescent-kick'
-</script>
+# Seeding
 
-# Animated FBX inside crescent kick
-
-<ObjViewer :script="insideCrescentKick" fallback="/previews/inside-crescent-kick.png" fallback-alt="Inside crescent kick surface mesh preview" />
+$$
+\mathrm{argmax}_{v\in V} \mathrm{min}_{s\in S} d(v,s)
+$$
 
 ---
 
@@ -238,52 +238,12 @@ import { butterflyKick } from './showcases/butterfly-kick'
 ---
 
 <script setup lang="ts">
-import { butterflyKickDashed } from './showcases/butterfly-kick'
-</script>
-
-# Butterfly kick with dashed motion lines
-
-<ObjViewer :script="butterflyKickDashed" fallback="/previews/butterfly-kick-dashed.png" fallback-alt="Butterfly kick dashed motion-line preview" />
-
----
-
-<script setup lang="ts">
-import { butterflyKickUniform } from './showcases/butterfly-kick'
-</script>
-
-# Butterfly kick with uniform seed selection
-
-<ObjViewer :script="butterflyKickUniform" fallback="/previews/butterfly-kick-uniform.png" fallback-alt="Butterfly kick uniform seed preview" />
-
----
-
-<script setup lang="ts">
-import { butterflyKickUniformSpacetime } from './showcases/butterfly-kick'
-</script>
-
-# Butterfly kick with uniform space-time seeding
-
-<ObjViewer :script="butterflyKickUniformSpacetime" fallback="/previews/butterfly-kick-uniform-spacetime.png" fallback-alt="Butterfly kick uniform space-time preview" />
-
----
-
-<script setup lang="ts">
 import { butterflyKickExtendedImportanceSpacetime } from './showcases/butterfly-kick'
 </script>
 
 # Butterfly kick with stochastic extended importance space-time seeding
 
 <ObjViewer :script="butterflyKickExtendedImportanceSpacetime" fallback="/previews/butterfly-kick-extended-importance-spacetime.png" fallback-alt="Butterfly kick extended importance preview" />
-
----
-
-<script setup lang="ts">
-import { butterflyKickImportanceSpacetime } from './showcases/butterfly-kick'
-</script>
-
-# Butterfly kick with deterministic importance space-time seeding
-
-<ObjViewer :script="butterflyKickImportanceSpacetime" fallback="/previews/butterfly-kick-importance-spacetime.png" fallback-alt="Butterfly kick importance preview" />
 
 ---
 layout: default
