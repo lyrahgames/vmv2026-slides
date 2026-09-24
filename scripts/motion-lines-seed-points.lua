@@ -6,7 +6,7 @@ reset_camera()
 
 if #animations > 0 then
   select_animation(1)
-  set_motion_line_style("dashed")
+  set_motion_line_style("full-trajectory")
   set_motion_lines_uniform_spacetime(8, 30, 30)
   set_seed_points_visible(true)
   set_animation_speed(0.5)

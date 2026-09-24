@@ -173,6 +173,7 @@ function applyTemporalFilteringClick() {
 watch($clicks, applyTemporalFilteringClick)
 
 async function temporalFilteringScript(viewer: any) {
+  viewer.setMotionLineStyle('full-trajectory')
   await butterflyKickTemporalFiltering(viewer)
   temporalViewer = viewer
   trajectoriesRequested = false
