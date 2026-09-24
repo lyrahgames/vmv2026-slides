@@ -23,6 +23,7 @@ export interface ViewerApi {
   setMotionLines(config: MotionLineConfig): Promise<void>
   setMotionLineStyle(style: MotionLineStyle): void
   clearMotionLines(): void
+  setSeedPointsVisible(visible: boolean): void
   resetCamera(): void
   frameAnimation(): void
   setCamera(config: { eye: number[]; target: number[]; up: number[]; fov: number }): void
@@ -558,6 +559,9 @@ async function start() {
       },
       clearMotionLines() {
         viewerHandle.clearMotionLines()
+      },
+      setSeedPointsVisible(visible) {
+        viewerHandle.setSeedPointsVisible(visible)
       },
       resetCamera() {
         viewerHandle.reset_camera()
