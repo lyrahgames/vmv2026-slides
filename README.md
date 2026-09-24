@@ -27,6 +27,7 @@ The browser API has the equivalent asynchronous call:
 viewer.setBackgroundColor([1, 1, 1]) // normalized linear RGB
 await viewer.setMotionLines({ algorithm: 'uniform', count: 512, fps: 30 })
 viewer.setMotionLineStyle('full-trajectory') // continuous opaque dark gray lines; no trajectory rebuild
+// Other styles: 'full-trajectory-window' and 'teaser-unweighted'
 // or: viewer.setMotionLineStyle('dashed')
 await viewer.setMotionLines({
   algorithm: 'uniform-spacetime', count: 512, samplingRate: 8, fps: 30,

@@ -158,14 +158,22 @@ function applyTemporalFilteringClick() {
   const clicks = $clicks.value
   viewer.setSeedPointsVisible(clicks >= 1)
   viewer.setMotionLinesVisible(clicks >= 2)
-  if (clicks >= 3) viewer.playAnimation()
+  if (clicks === 3) viewer.playAnimation()
   else viewer.pauseAnimation()
+  viewer.setMotionLineStyle(
+    clicks >= 7 ? 'teaser'
+      : clicks >= 6 ? 'teaser-unweighted'
+        : clicks >= 5 ? 'full-trajectory-window'
+          : 'full-trajectory',
+  )
 
   if (clicks >= 1 && !trajectoriesRequested) {
     trajectoriesRequested = true
-    // Random selection gives a few readable seeds without uniform selection's
-    // expensive farthest-point search across the whole mesh.
-    void viewer.setMotionLines({ algorithm: 'random', count: 6, fps: 12 })
+    // Select seeds from poses sampled at 8 FPS, then trace their motion
+    // lines at the existing 12 FPS rate.
+    void viewer.setMotionLines({
+      algorithm: 'uniform-spacetime', count: 32, samplingRate: 8, fps: 12,
+    })
       .catch((error: unknown) => console.error('Temporal Filtering motion lines:', error))
   }
 }
@@ -173,7 +181,6 @@ function applyTemporalFilteringClick() {
 watch($clicks, applyTemporalFilteringClick)
 
 async function temporalFilteringScript(viewer: any) {
-  viewer.setMotionLineStyle('full-trajectory')
   await butterflyKickTemporalFiltering(viewer)
   temporalViewer = viewer
   trajectoriesRequested = false
@@ -194,7 +201,10 @@ async function temporalFilteringScript(viewer: any) {
 <span v-click class="temporal-filtering-click" aria-hidden="true"></span>
 <span v-click class="temporal-filtering-click" aria-hidden="true"></span>
 <span v-click class="temporal-filtering-click" aria-hidden="true"></span>
-
+<span v-click class="temporal-filtering-click" aria-hidden="true"></span>
+<span v-click class="temporal-filtering-click" aria-hidden="true"></span>
+<span v-click class="temporal-filtering-click" aria-hidden="true"></span>
+<span v-click class="temporal-filtering-click" aria-hidden="true"></span>
 <style>
 .temporal-filtering-click{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 </style>
