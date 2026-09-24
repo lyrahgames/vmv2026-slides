@@ -219,6 +219,18 @@ $$
 \mathrm{argmax}_{v\in V} \mathrm{min}_{s\in S} d(v,s)
 $$
 
+$$
+\mathrm{argmax}_{v\in V} \max_{t\in T} \mathrm{min}_{s\in S} d(v,s)
+$$
+
+$$
+\varphi(v) \coloneqq \max_{t\in T} \min_{s\in S} d(v, s)
+$$
+
+$$
+P(v) \coloneqq \frac{\varphi(v}{\sum_{w\in V} \varphi(w)}
+$$
+
 ---
 
 <script setup lang="ts">
