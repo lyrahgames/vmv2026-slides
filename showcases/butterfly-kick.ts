@@ -27,7 +27,7 @@ export async function butterflyKickTemporalFiltering(viewer: any) {
   viewer.setMotionLinesVisible(false)
   viewer.setSeedPointsVisible(false)
   viewer.selectAnimation(0)
-  viewer.setAnimationTime(animations[0].duration * 0.5)
+  viewer.setAnimationTime(animations[0].duration * 0.4)
   viewer.setCamera({
     eye: [-530, 86, 230],
     target: [0, 86, 230],
@@ -35,6 +35,27 @@ export async function butterflyKickTemporalFiltering(viewer: any) {
     fov: 38,
   })
   viewer.setAnimationSpeed(1)
+}
+
+// Static seeding view at the same fixed pose and camera used by the tracing
+// guide. The visible seeds are selected spatially from this single pose.
+export async function butterflyKickStaticSeeding(viewer: any) {
+  viewer.setBackgroundColor([1, 1, 1])
+  const animations = await viewer.loadFbx('/models/Butterfly%20Kick.fbx')
+  if (animations.length === 0) return
+
+  viewer.selectAnimation(0)
+  viewer.setAnimationTime(0)
+  viewer.pauseAnimation()
+  await viewer.setMotionLines({ algorithm: 'uniform', count: 32, fps: 1 })
+  viewer.setMotionLinesVisible(false)
+  viewer.setSeedPointsVisible(true)
+  viewer.setCamera({
+    eye: [-530, 86, -70],
+    target: [0, 86, -70],
+    up: [0, 1, 0],
+    fov: 38,
+  })
 }
 
 async function runButterflyKickIntro(
@@ -94,7 +115,7 @@ export function butterflyKickUniformSpacetime(viewer: any) {
 }
 
 export function butterflyKickExtendedImportanceSpacetime(viewer: any) {
-  return runButterflyKickSpacetime(viewer, 'extended-importance-spacetime', 'stochastic')
+  return runButterflyKickSpacetime(viewer, 'extended-importance-spacetime', 'stochastic', true)
 }
 
 export function butterflyKickImportanceSpacetime(viewer: any) {
@@ -122,9 +143,13 @@ async function runButterflyKick(
     viewer.playAnimation()
   }
 
-  // Express the orbit relative to the animated mesh. The renderer resolves
-  // the current pose center every frame, so root motion cannot leave the
-  // camera behind the fighter.
+  return animateButterflyKickCamera(viewer)
+}
+
+// Express the orbit relative to the animated mesh. The renderer resolves the
+// current pose center every frame, so root motion cannot leave the camera
+// behind the fighter.
+function animateButterflyKickCamera(viewer: any) {
   const roundtripSeconds = 10
   const horizontalRadius = 390
   let active = true
@@ -161,6 +186,7 @@ async function runButterflyKickSpacetime(
   viewer: any,
   algorithm: 'uniform-spacetime' | 'importance-spacetime' | 'extended-importance-spacetime',
   selection?: 'deterministic' | 'stochastic',
+  orbitCamera = false,
 ) {
   viewer.setBackgroundColor([1, 1, 1])
   const animations = await viewer.loadFbx('/models/Butterfly%20Kick.fbx')
@@ -182,4 +208,5 @@ async function runButterflyKickSpacetime(
     viewer.setAnimationSpeed(1.0)
     viewer.playAnimation()
   }
+  if (orbitCamera) return animateButterflyKickCamera(viewer)
 }

@@ -14,8 +14,14 @@ export async function meiaLuaDeCompasso(viewer: any) {
   // The supplied file exposes its demonstration clip as animation zero.
   if (animations.length > 0) {
     viewer.selectAnimation(0)
-    await viewer.setMotionLines({ algorithm: 'random', count: 512, fps: 30 })
-    viewer.setAnimationSpeed(1.0)
+    await viewer.setMotionLines({
+      algorithm: 'uniform-spacetime',
+      count: 8,
+      samplingRate: 8,
+      fps: 30,
+    })
+    viewer.setMotionLineStyle('dashed')
+    viewer.setAnimationSpeed(0.5)
     viewer.playAnimation()
   }
 }

@@ -172,7 +172,7 @@ function applyTemporalFilteringClick() {
     // Select seeds from poses sampled at 8 FPS, then trace their motion
     // lines at the existing 12 FPS rate.
     void viewer.setMotionLines({
-      algorithm: 'uniform-spacetime', count: 32, samplingRate: 8, fps: 12,
+      algorithm: 'uniform-spacetime', count: 8, samplingRate: 8, fps: 12,
     })
       .catch((error: unknown) => console.error('Temporal Filtering motion lines:', error))
   }
@@ -191,7 +191,7 @@ async function temporalFilteringScript(viewer: any) {
 }
 </script>
 
-# Tracing
+# Seeding, Tracing, and Styling
 
 <ObjViewer
   :script="temporalFilteringScript"
@@ -211,35 +211,123 @@ async function temporalFilteringScript(viewer: any) {
 
 ---
 
-# Temporal Filter
+# Temporal Filtering
+
+<v-clicks>
+
+- Seeds are fixed over time
+
+
+$\implies$ Filter significant motion to reduce visual clutter (opacity & thickness weighting)
+
+</v-clicks>
+
+
+<v-click>
+
+- Maximum speed over a past time window must exceed a given threshold
 
 $$
-\mathrm{max}_{t\in [t_0-\tau, t_0]} v(t) \ge v_{\mathrm{min}}
+\max_{t\in [t_0-\tau, t_0]} v(t) \ge v_{\mathrm{min}}
 $$
+
+</v-click>
+
+<v-click>
+
+- The distance traveled in the past time window must exceed a given threshold
 
 $$
 s(t_0) - s(t_0 - \tau) \ge s_{\mathrm{min}}
 $$
 
+</v-click>
+
 ---
 
 # Seeding
 
-$$
-\mathrm{argmax}_{v\in V} \mathrm{min}_{s\in S} d(v,s)
-$$
+The Static Case
+
+<script setup lang="ts">
+import { butterflyKickStaticSeeding } from './showcases/butterfly-kick'
+</script>
+
+<div class="static-seeding-layout">
+<div class="static-seeding-text">
+
+<v-clicks>
+
+For a fixed time $t\in T$,
+
+iteratively choose from candidates $V$ the next seed in $S$.
+
+Maximize the minimum pairwise Euclidean distances:
 
 $$
-\mathrm{argmax}_{v\in V} \max_{t\in T} \mathrm{min}_{s\in S} d(v,s)
+\argmax_{v\in V} \min_{s\in S} \|v(t) - s(t)\|
 $$
 
-$$
-\varphi(v) \coloneqq \max_{t\in T} \min_{s\in S} d(v, s)
-$$
+</v-clicks>
+
+</div>
+
+<ObjViewer
+  :script="butterflyKickStaticSeeding"
+  release-on-leave
+  :controls="false"
+  style="width: 100%; height: 400px; margin: 0"
+/>
+</div>
+
+<style>
+.static-seeding-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);align-items:center;gap:1.25rem;height:400px}
+.static-seeding-text{min-width:0}
+@media(max-width:800px){.static-seeding-layout{grid-template-columns:minmax(0,1fr) minmax(220px,.8fr);gap:.75rem}}
+</style>
+
+---
+
+# Seeding
+
+The Dynamic Case
+
+For the full animation, maximize minimal pairwise distance across time:
 
 $$
-P(v) \coloneqq \frac{\varphi(v}{\sum_{w\in V} \varphi(w)}
+\argmax_{v\in V} \max_{t\in T} \min_{s\in S} \|v(t) - s(t)\|
 $$
+
+---
+
+# Importance Seeding
+Alternate Formulation as Probability Distribution
+
+<v-click>
+
+Assign the maximum pairwise distance as potential value to a candidate:
+
+$$
+\varphi(v) \coloneqq \max_{t\in T} \min_{s\in S} \|v(t) - s(t)\|
+$$
+
+</v-click>
+
+<v-click>
+
+Transform potential into probability distribution:
+
+$$
+P(v) \coloneqq \frac{\varphi(v)}{\sum_{w\in V} \varphi(w)}
+$$
+
+</v-click>
+
+<v-click>
+
+Sample from the distribution for randomization and even construct other heuristics
+
+</v-click>
 
 ---
 
@@ -260,12 +348,29 @@ import { butterflyKick } from './showcases/butterfly-kick'
 ---
 
 <script setup lang="ts">
+import { meiaLuaDeCompasso } from './showcases/meia-lua-de-compasso'
+</script>
+
+<ObjViewer :script="meiaLuaDeCompasso" release-on-leave :controls="false" />
+
+---
+
+<script setup lang="ts">
 import { butterflyKickExtendedImportanceSpacetime } from './showcases/butterfly-kick'
 </script>
 
-# Butterfly kick with stochastic extended importance space-time seeding
-
 <ObjViewer :script="butterflyKickExtendedImportanceSpacetime" fallback="/previews/butterfly-kick-extended-importance-spacetime.png" fallback-alt="Butterfly kick extended importance preview" />
+
+---
+
+# Conclusions
+
+<div class="h-full flex flex-col justify-center">
+
+- test
+- test2
+
+</div>
 
 ---
 layout: default
