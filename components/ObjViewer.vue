@@ -15,6 +15,8 @@ export interface ViewerApi {
   playAnimation(): void
   pauseAnimation(): void
   setAnimationTime(time: number): void
+  renderPhantom(time: number, opacity?: number): void
+  clearPhantoms(): void
   getAnimationTime(): Promise<number>
   setAnimationSpeed(speed: number): void
   setBackgroundColor(color: [number, number, number]): void
@@ -22,6 +24,7 @@ export interface ViewerApi {
   showScene(): void
   setMotionLines(config: MotionLineConfig): Promise<void>
   setMotionLineStyle(style: MotionLineStyle): void
+  setMotionLineOpacity(opacity: number): void
   clearMotionLines(): void
   setMotionLinesVisible(visible: boolean): void
   setSeedPointsVisible(visible: boolean): void
@@ -513,6 +516,12 @@ async function start() {
       setAnimationTime(time) {
         viewerHandle.setAnimationTime(time)
       },
+      renderPhantom(time, opacity = 0.24) {
+        viewerHandle.renderPhantom(time, opacity)
+      },
+      clearPhantoms() {
+        viewerHandle.clearPhantoms()
+      },
       getAnimationTime() {
         return viewerHandle.getAnimationTime() as Promise<number>
       },
@@ -564,6 +573,9 @@ async function start() {
       },
       setMotionLineStyle(style) {
         viewerHandle.setMotionLineStyle(style)
+      },
+      setMotionLineOpacity(opacity) {
+        viewerHandle.setMotionLineOpacity(opacity)
       },
       clearMotionLines() {
         viewerHandle.clearMotionLines()

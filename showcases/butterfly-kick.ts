@@ -58,6 +58,41 @@ export async function butterflyKickStaticSeeding(viewer: any) {
   })
 }
 
+// Displays five fixed poses from the complete clip as translucent GPU-skinned
+// phantoms, with one space-time seed set drawn on every pose.
+export async function butterflyKickDynamicSeeding(viewer: any) {
+  viewer.setBackgroundColor([1, 1, 1])
+  viewer.clearPhantoms()
+  const animations = await viewer.loadFbx('/models/Butterfly%20Kick.fbx')
+  if (animations.length === 0) return
+
+  viewer.selectAnimation(0)
+  viewer.setAnimationTime(0)
+  viewer.pauseAnimation()
+  viewer.hideScene()
+  viewer.setCamera({
+    eye: [-480, 86, 230],
+    target: [0, 86, 230],
+    up: [0, 1, 0],
+    fov: 38,
+  })
+  await viewer.setMotionLines({
+    algorithm: 'uniform-spacetime',
+    count: 4,
+    samplingRate: 8,
+    fps: 12,
+  })
+  viewer.setMotionLineStyle('full-trajectory')
+  viewer.setMotionLineOpacity(0.3)
+  viewer.setMotionLinesVisible(true)
+  viewer.setSeedPointsVisible(true)
+
+  const duration = animations[0].duration
+  for (const sampleTime of [0, 0.3, 0.4, 0.55, 1]) {
+    viewer.renderPhantom(duration * sampleTime, 0.24)
+  }
+}
+
 async function runButterflyKickIntro(
   viewer: any,
   withMotionLines: boolean,

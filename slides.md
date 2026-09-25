@@ -288,6 +288,10 @@ $$
 
 ---
 
+<script setup lang="ts">
+import { butterflyKickDynamicSeeding } from './showcases/butterfly-kick'
+</script>
+
 # Seeding
 
 The Dynamic Case
@@ -297,6 +301,13 @@ For the full animation, maximize minimal pairwise distance across time:
 $$
 \argmax_{v\in V} \max_{t\in T} \min_{s\in S} \|v(t) - s(t)\|
 $$
+
+<ObjViewer
+  :script="butterflyKickDynamicSeeding"
+  release-on-leave
+  :controls="false"
+  style="width: 100%; height: 280px; margin-top: 0.5rem"
+/>
 
 ---
 
@@ -340,14 +351,6 @@ import { dancingSkeleton } from './showcases/dancing-skeleton'
 ---
 
 <script setup lang="ts">
-import { butterflyKick } from './showcases/butterfly-kick'
-</script>
-
-<ObjViewer :script="butterflyKick" fallback="/previews/butterfly-kick.png" fallback-alt="Butterfly kick motion-line preview" />
-
----
-
-<script setup lang="ts">
 import { meiaLuaDeCompasso } from './showcases/meia-lua-de-compasso'
 </script>
 
@@ -360,17 +363,6 @@ import { butterflyKickExtendedImportanceSpacetime } from './showcases/butterfly-
 </script>
 
 <ObjViewer :script="butterflyKickExtendedImportanceSpacetime" fallback="/previews/butterfly-kick-extended-importance-spacetime.png" fallback-alt="Butterfly kick extended importance preview" />
-
----
-
-# Conclusions
-
-<div class="h-full flex flex-col justify-center">
-
-- test
-- test2
-
-</div>
 
 ---
 layout: default
